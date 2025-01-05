@@ -1,19 +1,23 @@
 import db from '../config/connection.js';
-import { Question } from '../models/index.js'
+import { Question } from '../models/index.js';
 import cleanDB from './cleanDb.js';
+import questionData from './pythonQuestions.json' assert { type: 'json' };
 
-import questionData from './pythonQuestions.json' assert{ type: 'json'};
+(async () => {
+  try {
+    // Connect to the database
+    await db();
 
-try {
-  await db();
-  await cleanDB();
+    // Clean the database
+    await cleanDB();
 
-  // bulk create each model
-  await Question.insertMany(questionData);
+    // Seed questions into the database
+    await Question.insertMany(questionData);
 
-  console.log('Seeding completed successfully!');
-  process.exit(0);
-} catch (error) {
-  console.error('Error seeding database:', error);
-  process.exit(1);
-}
+    console.log('Seeding completed successfully!');
+    process.exit(0);
+  } catch (error) {
+    console.error('Error seeding database:', error);
+    process.exit(1);
+  }
+})();

@@ -1,8 +1,10 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import path from 'node:path';
+import dotenv from 'dotenv'; // Ensure you use dotenv
+import db from './config/connection';
+import routes from './routes/index';
 
-import db from './config/connection.js';
-import routes from './routes/index.js';
+dotenv.config();
 
 await db();
 
@@ -16,11 +18,11 @@ app.use(routes);
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/dist')));
 
-   app.get('*', (_req, res) => {
+
+  app.get('*', (_req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, '../client/dist/index.html'));
   });
 }
-
 app.listen(PORT, () => {
   console.log(`API server running on port ${PORT}!`);
 });
